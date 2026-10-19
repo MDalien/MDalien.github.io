@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a Cowrie SSH Honeypot | Markens</title>
+  <meta name="description" content="Setting up Cowrie in an Ubuntu VM and testing my first SSH honeypot.">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .post {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .back-link {
+      color: #a3e635;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .post h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      margin: 28px 0 16px;
+    }
+
+    .post-meta {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .post h2 {
+      margin-top: 38px;
+      margin-bottom: 14px;
+    }
+
+    .post p,
+    .post li {
+      line-height: 1.8;
+      color: #d1d5db;
+    }
+
+    .post li {
+      margin-bottom: 8px;
+    }
+
+    .post a {
+      color: #a3e635;
+    }
+
+    .post code {
+      background: #202020;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    .post pre {
+      background: #171717;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .post pre code {
+      padding: 0;
+    }
+
+    .post hr {
+      border: 0;
+      border-top: 1px solid #333;
+      margin: 36px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="post">
+    <a class="back-link" href="/blog/">← Back to blog</a>
+
+    <p class="post-meta">Cybersecurity · Homelab · Cowrie</p>
+
+    <h1>Building a Cowrie SSH Honeypot</h1>
+
+    <p>
+      I've been working on my cybersecurity homelab, and one of the projects
+      I'm building is an SSH honeypot using Cowrie. I wanted to do more than
+      just install a tool and call it a project. I want to understand what
+      happens when someone connects to a service, what gets logged, and how
+      I can use that information to investigate activity.
+    </p>
+
+    <h2>My setup</h2>
+
+    <p>Here's what I'm using for the lab:</p>
+
+    <ul>
+      <li>Windows PC</li>
+      <li>Oracle VirtualBox</li>
+      <li>Ubuntu Linux VM</li>
+      <li>Cowrie SSH honeypot</li>
+      <li>TCP port 2222 for testing</li>
+    </ul>
+
+    <p>
+      I'm keeping everything in a virtual lab so I can test things in a
+      controlled environment without exposing the honeypot to the public
+      internet.
+    </p>
+
+    <h2>Getting Cowrie running</h2>
+
+    <p>
+      I installed the prerequisites, cloned the official Cowrie repository,
+      set up a Python virtual environment, and installed the dependencies.
+      After configuring and starting Cowrie, I checked that the service was
+      running.
+    </p>
+
+    <p>
+      Cowrie is different from a normal SSH server. It gives you an emulated
+      Linux environment, so the commands you enter interact with the
+      honeypot's fake environment rather than giving you a real root shell
+      on the host.
+    </p>
+
+    <p>
+      I then connected over SSH using the local loopback address on port
+      2222 and tried a few harmless commands. That was my first test to make
+      sure I could connect and that Cowrie was recording the session.
+    </p>
+
+    <h2>Checking the logs</h2>
+
+    <p>
+      One of the main reasons I chose Cowrie is the logs. It can record
+      authentication activity, commands entered during a session, and other
+      connection details in a JSON event log.
+    </p>
+
+    <p>
+      The file I'm looking at is <code>var/log/cowrie/cowrie.json</code>.
+      Since the events are structured, I can use Python later to break them
+      down and look for patterns instead of reading through everything
+      manually.
+    </p>
+
+    <p>
+      This is the part I want to spend more time on. Understanding what the events mean and
+      figuring out what deserves attention is where the security side gets
+      interesting.
+    </p>
+
+    <h2>What's next?</h2>
+
+    <p>
+      I'm going to dig deeper into the logs and build a small Python script
+      to summarize the activity, such as attempted usernames, source
+      addresses, and commands. After that, I want to connect Cowrie to
+      Wazuh so I can work on centralized monitoring, alerts, and
+      investigating suspicious activity.
+    </p>
+
+    <p>
+      I'm still building this out, but the goal is to actually demonstrate what I've learned.
+    </p>
+
+    <hr>
+
+    <p>
+      <a href="/">← Back to portfolio</a>
+    </p>
+  </main>
+</body>
+</html>
