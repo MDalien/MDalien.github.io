@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Markens Dalien's computer science, IT, and cybersecurity portfolio.">
+  <title>Markens Dalien | IT & Cybersecurity</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111821;
+      --text: #e7edf5;
+      --muted: #9ba9ba;
+      --accent: #65d6ad;
+      --border: #25313e;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(1000px, 90%);
+      margin: auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo { font-weight: bold; color: var(--text); }
+    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+
+    .hero { padding: 95px 0 75px; }
+
+    .eyebrow {
+      color: var(--accent);
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      line-height: 1.1;
+      margin: 16px 0;
+      letter-spacing: -2px;
+    }
+
+    h2 { font-size: 1.8rem; margin-bottom: 12px; }
+    h3 { margin-top: 0; }
+    p { color: var(--muted); }
+
+    .hero p { max-width: 650px; font-size: 1.1rem; }
+
+    .button {
+      display: inline-block;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 10px 17px;
+      margin: 12px 8px 0 0;
+      color: var(--accent);
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #07120e;
+      font-weight: bold;
+    }
+
+    section { padding: 48px 0; }
+
+    .section-intro {
+      margin-top: 0;
+      max-width: 650px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 23px;
+    }
+
+    .card p { font-size: 0.96rem; }
+    .tags { color: var(--accent); font-size: 0.85rem; }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .skills span {
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 11px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 25px 0;
+      margin-top: 35px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 500px) {
+      .hero { padding-top: 65px; }
+      .nav-links { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="container">
+      <a class="logo" href="#">MD / Portfolio</a>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#learning">Learning</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="eyebrow">COMPUTER SCIENCE · IT · CYBERSECURITY</div>
+      <h1>Hey, I'm Markens.<br>I'm building my skills.</h1>
+      <p>
+        I'm a Computer Science student at Florida Atlantic University
+        interested in IT infrastructure, Linux, networking, and cybersecurity.
+        This site documents the projects I'm building and the things I'm
+        learning along the way.
+      </p>
+      <a class="button primary" href="#projects">Explore my projects</a>
+      <a class="button" href="https://github.com/MDalien">GitHub profile ↗</a>
+    </section>
+
+    <section id="about" class="container">
+      <div class="eyebrow">01 / ABOUT</div>
+      <h2>A little about me</h2>
+      <p class="section-intro">
+        I'm working toward a career in IT and cybersecurity while finishing
+        my Computer Science degree at FAU. I learn best by getting hands-on,
+        troubleshooting problems, and documenting what actually works.
+        My goal is to build a strong foundation in systems, networking,
+        and security through practical projects.
+      </p>
+    </section>
+
+    <section id="projects" class="container">
+      <div class="eyebrow">02 / PROJECTS</div>
+      <h2>Things I've built</h2>
+      <p class="section-intro">
+        A collection of programming projects and technical work.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>AI Chess Game</h3>
+          <p>
+            A chess project built with Python and Pygame, using
+            Minimax search and alpha-beta pruning to explore game moves.
+          </p>
+          <div class="tags">Python · Pygame · AI</div>
+          <p><a href="https://github.com/MDalien/ai-chess">View source code ↗</a></p>
+        </article>
+
+        <article class="card">
+          <h3>Face Detection Counter</h3>
+          <p>
+            A computer vision project using OpenCV to detect faces
+            and eyes from a webcam and display detection results.
+          </p>
+          <div class="tags">Python · OpenCV · Computer Vision</div>
+          <p><a href="https://github.com/MDalien/Face-Detection-Counter">View source code ↗</a></p>
+        </article>
+
+        <article class="card">
+          <h3>IT & Cybersecurity Homelab</h3>
+          <p>
+            Hands-on practice with Ubuntu, virtual machines, Linux
+            administration, networking, SSH, and Nmap. I'm continuing
+            to expand the lab and document what I learn.
+          </p>
+          <div class="tags">Linux · VirtualBox · Networking · Nmap</div>
+          <p><a href="#learning">Follow my learning notes ↓</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section id="learning" class="container">
+      <div class="eyebrow">03 / CURRENT LEARNING</div>
+      <h2>Learning in public</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Linux File Integrity</h3>
+          <p>
+            Exploring how Linux Audit (auditd) records changes to
+            monitored files and helps investigators understand
+            what changed, when it changed, and which process was involved.
+          </p>
+          <div class="tags">Linux · auditd · Host Monitoring</div>
+          <p>Technical write-up in progress.</p>
+        </article>
+
+        <article class="card">
+          <h3>Security+ Preparation</h3>
+          <p>
+            Building a foundation in networking, operating systems,
+            security controls, and threat detection while preparing
+            for the CompTIA Security+ exam.
+          </p>
+          <div class="tags">Networking · Security Fundamentals</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="eyebrow">04 / TOOLKIT</div>
+      <h2>Technologies I'm working with</h2>
+      <div class="skills">
+        <span>Python</span>
+        <span>Java</span>
+        <span>C / C++</span>
+        <span>Linux</span>
+        <span>Ubuntu</span>
+        <span>VirtualBox</span>
+        <span>Nmap</span>
+        <span>SSH</span>
+        <span>Networking</span>
+        <span>Git & GitHub</span>
+        <span>Docker</span>
+        <span>OpenCV</span>
+        <span>MySQL</span>
+      </div>
+      <p>Skills shown here reflect my coursework and hands-on practice; I'm continuing to develop them.</p>
+    </section>
+
+    <section id="contact" class="container">
+      <div class="eyebrow">05 / CONTACT</div>
+      <h2>Let's connect.</h2>
+      <p>
+        Interested in IT, cybersecurity, internships, or collaborating
+        on projects? Feel free to reach out.
+      </p>
+      <a class="button primary" href="https://github.com/MDalien">GitHub ↗</a>
+      <!-- Add your LinkedIn URL below when ready. -->
+      <a class="button" href="https://www.linkedin.com/">LinkedIn ↗</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>© 2026 Markens Dalien</span>
+      <span> · Built with HTML & CSS · Hosted on GitHub Pages</span>
+    </div>
+  </footer>
+
+</body>
+</html>
