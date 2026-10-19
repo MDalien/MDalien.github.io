@@ -324,13 +324,7 @@
     <section id="home" class="hero container">
       <div class="eyebrow">COMPUTER SCIENCE · IT · CYBERSECURITY</div>
 
-      <h1>Hey, I'm Markens.<br>I'm building my skills.</h1>
-
-      <p class="hero-description">
-        I'm a Computer Science student at Florida Atlantic University
-        interested in IT infrastructure, Linux, networking, and cybersecurity.
-        This is where I share the projects I'm working on, what I'm learning,
-        and the problems I'm figuring out along the way.
+      <h1>Hey, I'm Markens.</h1>
       </p>
 
       <a class="button primary" href="#projects">Explore my projects</a>
@@ -341,20 +335,23 @@
 
     <!-- About -->
     <section id="about" class="container">
-      <div class="eyebrow">01 / ABOUT</div>
-      <h2>A little about me</h2>
+      <h2>About Me</h2>
 
       <p class="section-intro">
-        I'm studying Computer Science at Florida Atlantic University and
-        working toward a career in IT and cybersecurity. I enjoy learning
-        how systems work, troubleshooting technical problems, and getting
-        hands-on instead of relying on theory alone.
+        I'm a Computer Scienc student at FAU and
+        im very interested in IT and cybersecurity. I enjoy learning
+        how systems work, troubleshooting technical problems, and both the blue team
+        defense detection and response, and red team offense penetration testing.
+        
       </p>
 
       <p class="section-intro">
-        I'm currently building my foundation in Linux, networking,
-        system administration, and security. I use this site to document
-        my progress and share what I learn through practical projects.
+      Right now, I am currently building a Cowrie SSH honeypot to explore how attackers
+      interact with exposed services, analyze authentication attempts, and
+      investigate security logs. I'm using this to develop my skills
+      in Linux, networking, and blue team defense while learning more about
+      attacker techniques from a red team perspective.
+        
       </p>
     </section>
 
@@ -362,23 +359,38 @@
     <section id="projects" class="container">
       <div class="eyebrow">02 / PROJECTS</div>
       <h2>Projects</h2>
-
+    
       <p class="section-intro">
-        Programming projects and hands-on technical work.
+        Programming, cybersecurity, and hands-on lab projects.
       </p>
-
+    
       <div class="grid">
-
+    
+        <article class="card">
+          <p class="tags">LINUX · SSH · HONEYPOT</p>
+          <h3>Cowrie SSH Honeypot</h3>
+    
+          <p>
+            A cybersecurity lab project focused on deploying an SSH honeypot
+            to observe login attempts, capture attacker interactions, and
+            analyze security logs. The goal is to understand attacker behavior
+            and how this activity can support blue team detection and investigation.
+          </p>
+    
+          <a class="card-link" href="blog/cowrie-honeypot.html">
+            Read the project write-up ↗
+          </a>
+        </article>
+    
         <article class="card">
           <p class="tags">PYTHON · ARTIFICIAL INTELLIGENCE</p>
           <h3>AI Chess Game</h3>
-
+    
           <p>
-            A chess game built with Python and Pygame. The project uses
-            Minimax search and alpha-beta pruning to evaluate possible
-            moves and make decisions.
+            A chess game built with Python and Pygame that uses Minimax
+            search and alpha-beta pruning to evaluate possible moves.
           </p>
-
+    
           <a class="card-link"
              href="https://github.com/MDalien/ai-chess"
              target="_blank"
@@ -386,39 +398,6 @@
             View source code ↗
           </a>
         </article>
-
-        <article class="card">
-          <p class="tags">PYTHON · OPENCV</p>
-          <h3>Face Detection Counter</h3>
-
-          <p>
-            A computer vision project using OpenCV to detect faces and eyes
-            through a webcam and display detection results on screen.
-          </p>
-
-          <a class="card-link"
-             href="https://github.com/MDalien/Face-Detection-Counter"
-             target="_blank"
-             rel="noopener noreferrer">
-            View source code ↗
-          </a>
-        </article>
-
-        <article class="card">
-          <p class="tags">LINUX · NETWORKING</p>
-          <h3>IT & Cybersecurity Homelab</h3>
-
-          <p>
-            Hands-on practice with Ubuntu, virtual machines, Linux
-            administration, networking, SSH, and Nmap. I'm continuing
-            to expand the lab and document my troubleshooting process.
-          </p>
-
-          <a class="card-link" href="#learning">
-            Follow my learning notes ↓
-          </a>
-        </article>
-
       </div>
     </section>
 
