@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Investigating Linux file modifications with auditd in a CodePath CYB102 lab.">
+  <title>Let's Wget This Bread | Markens Dalien</title>
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111821;
+      --text: #e7edf5;
+      --muted: #9ba9ba;
+      --accent: #65d6ad;
+      --border: #25313e;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.8 Arial, Helvetica, sans-serif;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(820px, 90%);
+      margin: auto;
+    }
+
+    header { border-bottom: 1px solid var(--border); }
+
+    nav {
+      min-height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo { color: var(--text); font-weight: bold; }
+    .nav-links { display: flex; gap: 22px; }
+
+    main { padding: 55px 0 75px; }
+
+    .eyebrow, .tags {
+      color: var(--accent);
+      font: 0.85rem monospace;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      line-height: 1.2;
+      margin: 15px 0;
+    }
+
+    h2 {
+      margin-top: 45px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.65rem;
+    }
+
+    h3 { margin-top: 25px; }
+    p, li { color: var(--muted); }
+
+    .meta { font-size: 0.9rem; }
+
+    .callout {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 14px 18px;
+      margin: 25px 0;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #070a0e;
+      color: #d8e5ee;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    code { font-family: Consolas, Monaco, monospace; }
+
+    .evidence {
+      margin: 25px 0;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+
+    .evidence p { margin-bottom: 0; font-size: 0.9rem; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th { color: var(--text); }
+    td { color: var(--muted); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 500px) {
+      nav { padding: 12px 0; }
+      main { padding-top: 35px; }
+      th, td { padding: 9px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="container">
+      <a class="logo" href="/">MD / Portfolio</a>
+      <div class="nav-links">
+        <a href="/#about">About</a>
+        <a href="/blog/">Blog</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="eyebrow">LINUX · AUDITD · FILE INTEGRITY</div>
+
+    <h1>Let's Wget This Bread: Investigating File Changes with auditd</h1>
+
+    <p class="meta">
+      CodePath CYB102 · Linux security lab
+    </p>
+
+    <p>
+      For this lab, I explored how Linux Audit (<code>auditd</code>)
+      can help investigate unexpected file modifications. The goal
+      was to monitor protected files, run three provided attack scripts,
+      and use audit logs to connect file changes with recorded processes.
+    </p>
+
+    <div class="callout">
+      <strong>Investigation question:</strong>
+      Which files were modified, and what process was associated
+      with each change?
+    </div>
+
+    <h2>01 — Lab setup</h2>
+
+    <p>
+      I used an Ubuntu virtual machine with a starter project containing
+      protected files and three attack scripts: <code>attack-a</code>,
+      <code>attack-b</code>, and <code>attack-c</code>.
+      I configured audit rules to monitor write activity against
+      the 10 protected files.
+    </p>
+
+    <div class="evidence">
+      <strong>Screenshot 1 — Lab setup</strong>
+      <p>
+        Add a real screenshot of your Ubuntu terminal showing the
+        assignment files or your lab environment. Save it in your
+        repository under <code>images/</code>.
+      </p>
+    </div>
+
+    <h2>02 — Configuring auditd</h2>
+
+    <p>
+      I configured file-watch rules using three important options:
+    </p>
+
+    <ul>
+      <li><code>-w</code> specifies the file to monitor.</li>
+      <li><code>-p w</code> monitors write activity.</li>
+      <li><code>-k</code> assigns a key that can be used to filter events.</li>
+    </ul>
+
+    <p>
+      After loading the rules, I used <code>sudo auditctl -l</code>
+      to verify that the rules were active.
+    </p>
+
+    <pre><code>sudo auditctl -l</code></pre>
+
+    <div class="evidence">
+      <strong>Screenshot 2 — Active audit rules</strong>
+      <p>
+        Replace this placeholder with your actual terminal screenshot
+        showing the loaded rules. Make sure the file paths and rule
+        output are readable.
+      </p>
+    </div>
+
+    <h2>03 — Running the attack scripts</h2>
+
+    <p>
+      I ran <code>attack-a</code>, <code>attack-b</code>, and
+      <code>attack-c</code>, then inspected the audit events using
+      <code>ausearch</code>. I focused on fields such as
+      <code>name</code>, <code>comm</code>, <code>exe</code>,
+      and <code>key</code> to correlate file paths with the processes
+      recorded by the audit system.
+    </p>
+
+    <div class="evidence">
+      <strong>Screenshot 3 — Script execution and audit events</strong>
+      <p>
+        Add your actual terminal output showing the script commands
+        and relevant audit records. If necessary, use separate
+        screenshots so the evidence stays readable.
+      </p>
+    </div>
+
+    <h2>04 — Findings</h2>
+
+    <p>
+      My initial investigation identified the following file-to-script
+      associations. These are the results I recorded during the lab;
+      the underlying audit records should be included as evidence.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Associated attack</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>cloudia.txt</code></td><td>attack-a</td></tr>
+          <tr><td><code>oakley.txt</code></td><td>attack-b</td></tr>
+          <tr><td><code>squeaky.txt</code></td><td>attack-b</td></tr>
+          <tr><td><code>precipitation.csv</code></td><td>attack-c</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      One detail that stood out was that two files were associated
+      with <code>attack-b</code>, which differed from my understanding
+      of the assignment's description. This was a reason to inspect
+      the audit evidence carefully rather than assume the expected
+      result was correct.
+    </p>
+
+    <div class="evidence">
+      <strong>Screenshot 4 — Evidence supporting the findings</strong>
+      <p>
+        Add the relevant audit records that support these associations.
+        Keep the filename and process fields visible. If the logs don't
+        support a row, investigate it before publishing the conclusion.
+      </p>
+    </div>
+
+    <h2>05 — What I learned</h2>
+
+    <p>
+      This lab gave me practical experience with auditing
+      and investigating file activity on Linux.
+    </p>
+
+    <ul>
+      <li>Audit rules can record write activity involving monitored files.</li>
+      <li>Unique keys make related audit events easier to search.</li>
+      <li>Fields such as <code>name</code>, <code>comm</code>, and <code>exe</code> help connect events to files and processes.</li>
+      <li>Unexpected results should be checked against the original evidence before drawing conclusions.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      The exercise showed how file level audit records can support
+      investigation of unexpected changes. It also reinforced that
+      collecting logs is only part of the process: the analyst still
+      needs to go through the evidence and validate the conclusion.
+    </p>
+
+    <p><a href="/blog/">← Back to blog</a></p>
+  </main>
+
+  <footer>
+    <div class="container">2026 Markens Dalien</div>
+  </footer>
+</body>
+</html>
