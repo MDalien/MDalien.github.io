@@ -4,175 +4,327 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Building a Cowrie SSH Honeypot | Markens</title>
-  <meta name="description" content="Setting up Cowrie in an Ubuntu VM and testing my first SSH honeypot.">
-  <link rel="stylesheet" href="/style.css">
+  <meta name="description" content="My cybersecurity homelab: setting up Cowrie, testing SSH connections, and investigating honeypot logs.">
 
   <style>
-    .post {
-      max-width: 780px;
+    :root {
+      --bg: #0b0f12;
+      --surface: #11171c;
+      --border: #29343c;
+      --text: #e8edf2;
+      --muted: #a5b2bf;
+      --green: #54f0bd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .nav-inner {
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 48px 24px 80px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 26px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+    }
+
+    .post {
+      width: 100%;
+      max-width: 830px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
     }
 
     .back-link {
-      color: #a3e635;
-      text-decoration: none;
-      font-size: 0.95rem;
+      display: inline-block;
+      margin-bottom: 34px;
+      font-size: 14px;
     }
 
-    .post h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      line-height: 1.15;
-      margin: 28px 0 16px;
+    .eyebrow {
+      color: var(--green);
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin: 0 0 12px;
     }
 
-    .post-meta {
-      color: #999;
-      font-size: 0.9rem;
-      margin-bottom: 32px;
+    h1, h2, h3 {
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.25;
     }
 
-    .post h2 {
-      margin-top: 38px;
-      margin-bottom: 14px;
+    h1 {
+      font-size: clamp(32px, 5vw, 46px);
+      letter-spacing: -1.5px;
+      margin: 0 0 18px;
     }
 
-    .post p,
-    .post li {
+    h2 {
+      font-size: 23px;
+      margin: 42px 0 14px;
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0 0 18px;
+    }
+
+    .intro {
+      font-size: 18px;
       line-height: 1.8;
-      color: #d1d5db;
+      color: #c4ced8;
     }
 
-    .post li {
-      margin-bottom: 8px;
+    .meta {
+      color: #83919d;
+      font-size: 13px;
+      margin-bottom: 30px;
     }
 
-    .post a {
-      color: #a3e635;
+    .setup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin: 28px 0;
     }
 
-    .post code {
-      background: #202020;
+    .setup h2 {
+      margin: 0 0 14px;
+      font-size: 19px;
+    }
+
+    ul {
+      padding-left: 22px;
+      margin: 12px 0 18px;
+      color: var(--muted);
+    }
+
+    li {
+      padding-left: 4px;
+      margin-bottom: 7px;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9em;
+      color: var(--green);
+      background: #182128;
+      border: 1px solid #26343d;
+      border-radius: 5px;
       padding: 3px 6px;
-      border-radius: 4px;
+      overflow-wrap: anywhere;
     }
 
-    .post pre {
-      background: #171717;
-      padding: 16px;
-      border-radius: 8px;
-      overflow-x: auto;
+    .next-steps {
+      border-left: 3px solid var(--green);
+      padding: 4px 0 4px 20px;
+      margin-top: 20px;
     }
 
-    .post pre code {
-      padding: 0;
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
     }
 
-    .post hr {
-      border: 0;
-      border-top: 1px solid #333;
-      margin: 36px 0;
+    .footer-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .nav-inner {
+        padding: 16px 20px;
+      }
+
+      .post {
+        padding: 38px 20px 60px;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+
+      h2 {
+        margin-top: 34px;
+      }
+
+      .setup {
+        padding: 18px;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="logo" href="/">MD / Portfolio</a>
+
+      <nav class="nav-links">
+        <a href="/#about">About</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+  </header>
+
   <main class="post">
+
     <a class="back-link" href="/blog/">← Back to blog</a>
 
-    <p class="post-meta">Cybersecurity · Homelab · Cowrie</p>
+    <p class="eyebrow">Cybersecurity / Homelab</p>
 
     <h1>Building a Cowrie SSH Honeypot</h1>
 
-    <p>
-      I've been working on my cybersecurity homelab, and one of the projects
-      I'm building is an SSH honeypot using Cowrie. I wanted to do more than
-      just install a tool and call it a project. I want to understand what
-      happens when someone connects to a service, what gets logged, and how
-      I can use that information to investigate activity.
+    <p class="meta">Linux · SSH · Honeypots</p>
+
+    <p class="intro">
+      I've been working on my cybersecurity homelab, and one of the
+      projects I'm building is an SSH honeypot using Cowrie. I want
+      to understand what happens when someone connects, what gets logged,
+      and how I can use that information to investigate activity.
     </p>
 
-    <h2>My setup</h2>
+    <section class="setup">
+      <h2>My setup</h2>
 
-    <p>Here's what I'm using for the lab:</p>
-
-    <ul>
-      <li>Windows PC</li>
-      <li>Oracle VirtualBox</li>
-      <li>Ubuntu Linux VM</li>
-      <li>Cowrie SSH honeypot</li>
-      <li>TCP port 2222 for testing</li>
-    </ul>
+      <ul>
+        <li>Windows PC</li>
+        <li>Oracle VirtualBox</li>
+        <li>Ubuntu Linux VM</li>
+        <li>Cowrie SSH honeypot</li>
+        <li>TCP port 2222 for testing</li>
+      </ul>
+    </section>
 
     <p>
-      I'm keeping everything in a virtual lab so I can test things in a
-      controlled environment without exposing the honeypot to the public
-      internet.
+      I'm keeping everything in a virtual lab so I can test things in
+      a controlled environment without exposing the honeypot to the
+      public internet.
     </p>
 
     <h2>Getting Cowrie running</h2>
 
     <p>
-      I installed the prerequisites, cloned the official Cowrie repository,
-      set up a Python virtual environment, and installed the dependencies.
-      After configuring and starting Cowrie, I checked that the service was
-      running.
+      I installed the prerequisites, cloned the official Cowrie
+      repository, set up a Python virtual environment, and installed
+      the dependencies. After configuring and starting Cowrie, I checked
+      that the service was running.
     </p>
 
     <p>
-      Cowrie is different from a normal SSH server. It gives you an emulated
-      Linux environment, so the commands you enter interact with the
-      honeypot's fake environment rather than giving you a real root shell
-      on the host.
+      Cowrie gives you an emulated Linux environment. That means commands
+      entered into its shell interact with the honeypot's simulated
+      environment rather than giving someone a real root shell on the
+      host.
     </p>
 
     <p>
       I then connected over SSH using the local loopback address on port
-      2222 and tried a few harmless commands. That was my first test to make
-      sure I could connect and that Cowrie was recording the session.
+      2222 and tried a few harmless commands. This was my first test to
+      make sure the connection worked and Cowrie was recording the session.
     </p>
 
     <h2>Checking the logs</h2>
 
     <p>
-      One of the main reasons I chose Cowrie is the logs. It can record
-      authentication activity, commands entered during a session, and other
-      connection details in a JSON event log.
+      The logs are one of the main reasons I chose Cowrie. It can record
+      authentication activity, commands entered during a session, and
+      other connection details in a JSON event log.
     </p>
 
     <p>
-      The file I'm looking at is <code>var/log/cowrie/cowrie.json</code>.
-      Since the events are structured, I can use Python later to break them
-      down and look for patterns instead of reading through everything
-      manually.
+      The log file I'm looking at is
+      <code>var/log/cowrie/cowrie.json</code>. Since the events are
+      structured, I can use Python to summarize activity and look for
+      patterns instead of going through everything manually.
     </p>
 
     <p>
-      This is the part I want to spend more time on. Understanding what the events mean and
-      figuring out what deserves attention is where the security side gets
-      interesting.
+      Getting the honeypot running is one thing, but understanding the
+      events and figuring out what deserves attention is the part I
+      really want to get better at.
     </p>
 
     <h2>What's next?</h2>
 
-    <p>
-      I'm going to dig deeper into the logs and build a small Python script
-      to summarize the activity, such as attempted usernames, source
-      addresses, and commands. After that, I want to connect Cowrie to
-      Wazuh so I can work on centralized monitoring, alerts, and
-      investigating suspicious activity.
+    <div class="next-steps">
+      <p>
+        Next, I'm going to build a small Python script to summarize
+        activity like attempted usernames, source addresses, and commands.
+        After that, I want to connect Cowrie to Wazuh and work on
+        centralized monitoring, alerts, and investigating suspicious activity.
+      </p>
+
+      <p>
+        I'm still building this out, but I want this to be a project I
+        can actually understand and talk about.
+      </p>
+    </div>
+
+    <p style="margin-top: 42px;">
+      <a href="/blog/">← More write-ups</a>
+      &nbsp; · &nbsp;
+      <a href="/">Back to portfolio</a>
     </p>
 
-    <p>
-      I'm still building this out, but the goal is to actually demonstrate what I've learned.
-    </p>
-
-    <hr>
-
-    <p>
-      <a href="/">← Back to portfolio</a>
-    </p>
   </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      © 2026 Markens Dalien
+    </div>
+  </footer>
+
 </body>
 </html>
