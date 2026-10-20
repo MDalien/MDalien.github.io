@@ -275,41 +275,61 @@
     </p>
     <img
       src="cowrie-ssh-session.png"
-      alt="Cowrie honeypot running in the Ubuntu terminal"
+      alt="Cowrie SSH Connection"
       style="max-width: 100%; height: auto; border-radius: 8px;"
     >
     <h2>Checking the logs</h2>
 
     <p>
-      The logs are one of the main reasons I chose Cowrie. It can record
-      authentication activity, commands entered during a session, and
-      other connection details in a JSON event log.
+    After the test session, I inspected Cowrie's JSON event log at var/log/cowrie/cowrie.json. The log recorded the connection, simulated successful login, commands entered, and session closure.
+    This helped me understand how a honeypot turns an interactive session into structured security events that can be investigated later.
+    </p>
+    <img
+      src="cowrie-json-events.png"
+      alt="Cowrie Json Events"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
+    <p>
+    The logs showed me how Cowrie records an SSH session from the initial connection to the session closing. 
+    I identified the source IP (127.0.0.1), the simulated successful login as root, and commands i used which were whoami, ls, and uname -a. 
+    Also Cowrie recorded a mistyped command as a failed event.
+    This helped me understand how security analysts use timestamps, authentication events, and command history to investigate activity.
     </p>
 
     <p>
-      The log file I'm looking at is
-      <code>var/log/cowrie/cowrie.json</code>. Since the events are
-      structured, I can use Python to help summarize activity and look for
-      patterns.
+      I tried using a python script analyzer to get another and easier way to view the logs. With the script it worked and i got 17 events which are the local test IP. 
+      Source IP: 127.0.0.1
+      Username: root 
+      Commands: whoami, ls, uname -a, exit, and the mistyped Swhoami.
+      Failed command: Swhoami
     </p>
-
+    <img
+      src="python-script.png"
+      alt="Python Log Analysis"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
+    <img
+      src="python-log-analysis.png"
+      alt="Python Log Analysis"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
     <p>
-      I'm doing this so i can understand the events and figure out what deserves attention.
+      I upgraded the scriptand added Authentication summary:  1 success - 0 failures. Unique source IPs: 1 unique IP, 
+      All 17 events came from 127.0.0.1. Command frequency: 5 distinct commands. Session duration:  118.5 seconds.
+      This helps me learn how A SOC analyst would turn raw logs into answers.
     </p>
+    <img
+      src="python-investigation-report.png"
+      alt="Python log investigation"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
 
+    
     <h2>What's next?</h2>
 
     <div class="next-steps">
       <p>
-        Next, I'm going to build a small Python script to summarize
-        activity like attempted usernames, source addresses, and commands.
-        After that, I want to connect Cowrie to Wazuh and work on
-        centralized monitoring, alerts, and investigating suspicious activity.
-      </p>
-
-      <p>
-        I'm still building this out, but I want this to be a project I
-        can actually understand and talk about.
+      
       </p>
     </div>
 
