@@ -262,19 +262,22 @@
       that the service was running.
     </p>
 
-    <p>
-      Cowrie gives you an emulated Linux environment. That means commands
-      entered into its shell interact with the honeypot's simulated
-      environment rather than giving someone a real root shell on the
-      host.
-    </p>
+    <img
+      src="cowrie-running.png"
+      alt="Cowrie honeypot running in the Ubuntu terminal"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
 
     <p>
       I then connected over SSH using the local loopback address on port
       2222 and tried a few harmless commands. This was my first test to
       make sure the connection worked and Cowrie was recording the session.
     </p>
-
+    <img
+      src="cowrie-ssh-session.png"
+      alt="Cowrie honeypot running in the Ubuntu terminal"
+      style="max-width: 100%; height: auto; border-radius: 8px;"
+    >
     <h2>Checking the logs</h2>
 
     <p>
@@ -286,14 +289,12 @@
     <p>
       The log file I'm looking at is
       <code>var/log/cowrie/cowrie.json</code>. Since the events are
-      structured, I can use Python to summarize activity and look for
-      patterns instead of going through everything manually.
+      structured, I can use Python to help summarize activity and look for
+      patterns.
     </p>
 
     <p>
-      Getting the honeypot running is one thing, but understanding the
-      events and figuring out what deserves attention is the part I
-      really want to get better at.
+      I'm doing this so i can understand the events and figure out what deserves attention.
     </p>
 
     <h2>What's next?</h2>
