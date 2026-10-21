@@ -276,14 +276,6 @@
       That let me observe the results in my own lab.
     </p>
 
-    <h2>What is a DoS attack?</h2>
-
-    <p>
-      A Denial-of-Service (DoS) attack is when someone tries to make a
-      website or service unavailable by using up its resources. A
-      Distributed Denial-of-Service (DDoS) attack has the same general
-      goal, but uses multiple sources to send traffic or requests
-      toward the target.
     </p>
 
     <p>Some different types of DoS/DDoS attacks are:</p>
@@ -329,6 +321,13 @@
       I then installed Netdata and opened its dashboard in Firefox
       using <code>http://127.0.0.1:19999</code>.
     </p>
+    
+    <img
+      class="evidence"
+      src="nginx-running.png"
+      alt="Nginx"
+      loading="lazy"
+    >
 
     <p>
       I used the TCP Connections graph to watch the connection count
@@ -431,13 +430,6 @@
       elevated for as long as it did in my unprotected test.
     </p>
 
-    <img
-      class="evidence"
-      src="dos-protected-tcp.png"
-      alt="Netdata TCP Connections graph during the protected test"
-      loading="lazy"
-    >
-
     <p class="caption">
       Figure 4: TCP Connections during the protected Slowloris test.
     </p>
@@ -467,8 +459,7 @@
       Both tests still reached around 1,000 connections, so the peak
       count alone doesn't prove that the attack was stopped. The
       different patterns suggest that the timeout settings may have
-      affected how long connections stayed open, but the graphs alone
-      can't confirm exactly why the connections dropped.
+      affected how long connections stayed open.
     </p>
 
     <p>
@@ -494,17 +485,6 @@
       and check logs before deciding how effective the mitigation
       actually is.
     </p>
-
-    <h2>What's next?</h2>
-
-    <div class="next-steps">
-      <p>
-        Next, I want to inspect the Nginx error logs and look for
-        request header timeout events during testing. I also want
-        to learn more about TCP connection states and how monitoring
-        can help identify and investigate suspicious activity.
-      </p>
-    </div>
 
     <p style="margin-top: 42px;">
       <a href="/blog/">← More write-ups</a>
