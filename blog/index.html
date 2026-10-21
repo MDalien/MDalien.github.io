@@ -1,9 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog | Markens Dalien</title>
+  <meta name="description" content="Technical write-ups from Markens Dalien covering cybersecurity projects, Linux labs, and IT work.">
+
   <style>
     :root {
       --bg: #0b0f14;
@@ -14,7 +17,9 @@
       --border: #25313e;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -28,9 +33,20 @@
       margin: auto;
     }
 
-    header, footer { border-color: var(--border); border-style: solid; }
-    header { border-width: 0 0 1px; }
-    footer { border-width: 1px 0 0; margin-top: 50px; padding: 24px 0; }
+    header, footer {
+      border-color: var(--border);
+      border-style: solid;
+    }
+
+    header {
+      border-width: 0 0 1px;
+    }
+
+    footer {
+      border-width: 1px 0 0;
+      margin-top: 50px;
+      padding: 24px 0;
+    }
 
     nav {
       min-height: 65px;
@@ -39,30 +55,79 @@
       justify-content: space-between;
     }
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-    .logo { color: var(--text); font-weight: bold; }
-    .nav-links { display: flex; gap: 24px; }
+    a:hover {
+      text-decoration: underline;
+    }
 
-    main { padding-top: 65px; }
-    .eyebrow, .tags { color: var(--accent); font-family: monospace; }
-    h1 { font-size: clamp(2.5rem, 6vw, 3.7rem); line-height: 1.15; }
-    h2 { font-size: 1.4rem; margin-bottom: 5px; }
-    p, .date { color: var(--muted); }
-    .post { padding: 25px 0; border-bottom: 1px solid var(--border); }
-    .date { font-size: 0.9rem; }
+    .logo {
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    main {
+      padding-top: 65px;
+    }
+
+    .eyebrow, .tags {
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 3.7rem);
+      line-height: 1.15;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+    }
+
+    p, .date {
+      color: var(--muted);
+    }
+
+    .post {
+      padding: 25px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .date {
+      font-size: 0.9rem;
+    }
 
     @media (max-width: 500px) {
-      nav { padding: 12px 0; }
-      main { padding-top: 40px; }
+      nav {
+        padding: 12px 0;
+      }
+
+      main {
+        padding-top: 40px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
     }
   </style>
 </head>
+
 <body>
+
   <header>
     <nav class="container">
       <a class="logo" href="/">MD / Portfolio</a>
+
       <div class="nav-links">
         <a href="/#about">About</a>
         <a href="/blog/">Blog</a>
@@ -71,16 +136,38 @@
   </header>
 
   <main class="container">
+
     <div class="eyebrow">TECHNICAL WRITE-UPS</div>
+
     <h1>Blog</h1>
+
     <p>
       Notes from my cybersecurity projects, Linux labs, and IT work.
       Documenting what I build, what goes wrong, and what I learn.
     </p>
 
     <article class="post">
+      <div class="tags">AZURE · NGINX · DOS MITIGATION</div>
+      <h2>
+        <a href="/blog/dos-mitigation.html">
+          Testing DoS Mitigation with Nginx
+        </a>
+      </h2>
+      <div class="date">Cybersecurity lab</div>
+      <p>
+        Testing a Slowloris denial-of-service attack on my Azure Ubuntu
+        VM, monitoring TCP connections with Netdata, and comparing the
+        results before and after adding Nginx timeout settings.
+      </p>
+    </article>
+
+    <article class="post">
       <div class="tags">LINUX · SSH · HONEYPOTS</div>
-      <h2><a href="/blog/cowrie-honeypot.html">Building a Cowrie SSH Honeypot</a></h2>
+      <h2>
+        <a href="/blog/cowrie-honeypot.html">
+          Building a Cowrie SSH Honeypot
+        </a>
+      </h2>
       <div class="date">Project write-up</div>
       <p>
         Exploring SSH honeypot setup, authentication attempts, attacker
@@ -90,17 +177,23 @@
 
     <article class="post">
       <div class="tags">LINUX · AUDITD · FILE INTEGRITY</div>
-      <h2><a href="/blog/wget-file-integrity.html">Let's Wget This Bread: Linux File Integrity</a></h2>
+      <h2>
+        <a href="/blog/wget-file-integrity.html">
+          Let's Wget This Bread: Linux File Integrity
+        </a>
+      </h2>
       <div class="date">Course assignment</div>
       <p>
         Documenting my Linux audit assignment, including the setup,
         commands, results, and lessons learned.
       </p>
     </article>
+
   </main>
 
   <footer>
     <div class="container">© 2026 Markens Dalien</div>
   </footer>
+
 </body>
 </html>
