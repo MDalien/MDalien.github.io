@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Testing DoS Mitigation with Nginx | Markens</title>
+  <meta name="description" content="My Azure VM cybersecurity lab testing Slowloris, Nginx timeout settings, and Netdata monitoring.">
+
+  <style>
+    :root {
+      --bg: #0b0f12;
+      --surface: #11171c;
+      --border: #29343c;
+      --text: #e8edf2;
+      --muted: #a5b2bf;
+      --green: #54f0bd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 26px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+    }
+
+    .post {
+      width: 100%;
+      max-width: 830px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 34px;
+      font-size: 14px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin: 0 0 12px;
+    }
+
+    h1, h2, h3 {
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.25;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 46px);
+      letter-spacing: -1.5px;
+      margin: 0 0 18px;
+    }
+
+    h2 {
+      font-size: 23px;
+      margin: 42px 0 14px;
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0 0 18px;
+    }
+
+    .intro {
+      font-size: 18px;
+      line-height: 1.8;
+      color: #c4ced8;
+    }
+
+    .meta {
+      color: #83919d;
+      font-size: 13px;
+      margin-bottom: 30px;
+    }
+
+    .setup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin: 28px 0;
+    }
+
+    .setup h2 {
+      margin: 0 0 14px;
+      font-size: 19px;
+    }
+
+    ul {
+      padding-left: 22px;
+      margin: 12px 0 18px;
+      color: var(--muted);
+    }
+
+    li {
+      padding-left: 4px;
+      margin-bottom: 7px;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9em;
+      color: var(--green);
+      background: #182128;
+      border: 1px solid #26343d;
+      border-radius: 5px;
+      padding: 3px 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .evidence {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 24px 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .caption {
+      color: #83919d;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .next-steps {
+      border-left: 3px solid var(--green);
+      padding: 4px 0 4px 20px;
+      margin-top: 20px;
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+    }
+
+    .footer-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .nav-inner {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .post {
+        padding: 38px 20px 60px;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+
+      h2 {
+        margin-top: 34px;
+      }
+
+      .setup {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="logo" href="/">MD / Portfolio</a>
+
+      <nav class="nav-links">
+        <a href="/#about">About</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="post">
+
+    <a class="back-link" href="/blog/">← Back to blog</a>
+
+    <p class="eyebrow">Cybersecurity / Network Security</p>
+
+    <h1>Testing DoS Mitigation with Nginx</h1>
+
+    <p class="meta">Azure VM · Ubuntu · Nginx · Slowloris · Netdata</p>
+
+    <p class="intro">
+      For this project, I used my Azure Ubuntu VM to test a Slowloris
+      DoS attack against Nginx. I wanted to see what happens when a
+      server gets hit with a bunch of slow connections and what I could
+      do to help protect it. I used Netdata to watch the TCP connections
+      and network traffic, then added timeout settings to Nginx and
+      ran the test again to compare the results.
+    </p>
+
+    <section class="setup">
+      <h2>My setup</h2>
+
+      <ul>
+        <li>Microsoft Azure virtual machine</li>
+        <li>Ubuntu Linux</li>
+        <li>Nginx web server</li>
+        <li>Slowloris test tool</li>
+        <li>Netdata monitoring dashboard</li>
+        <li>TCP Connections and Network Traffic graphs</li>
+      </ul>
+    </section>
+
+    <p>
+      I did the testing inside my Azure VM and used
+      <code>127.0.0.1</code> as the target. This is the loopback address,
+      meaning the test was aimed at the same machine running Nginx.
+      That let me observe the results in my own lab.
+    </p>
+
+    <h2>What is a DoS attack?</h2>
+
+    <p>
+      A Denial-of-Service (DoS) attack is when someone tries to make a
+      website or service unavailable by using up its resources. A
+      Distributed Denial-of-Service (DDoS) attack has the same general
+      goal, but uses multiple sources to send traffic or requests
+      toward the target.
+    </p>
+
+    <p>Some different types of DoS/DDoS attacks are:</p>
+
+    <ul>
+      <li>
+        <strong>UDP floods:</strong> Send large amounts of UDP traffic
+        to consume network bandwidth or system resources.
+      </li>
+      <li>
+        <strong>SYN floods:</strong> Send many TCP connection requests
+        that can leave server resources tied up before connections
+        are fully established.
+      </li>
+      <li>
+        <strong>HTTP floods:</strong> Send large numbers of HTTP requests
+        to overwhelm a web server or application.
+      </li>
+      <li>
+        <strong>Slowloris:</strong> Keep HTTP connections open by
+        sending request headers slowly, potentially using up the
+        server's available connections.
+      </li>
+      <li>
+        <strong>DNS amplification:</strong> Abuse DNS responses to
+        direct a larger volume of traffic toward a target.
+      </li>
+    </ul>
+
+    <p>
+      For this project, I focused on Slowloris. Instead of just sending
+      a huge amount of traffic, it tries to keep connections open by
+      sending incomplete HTTP headers slowly. If enough connections
+      stay open, the web server can have a harder time handling new
+      requests.
+    </p>
+
+    <h2>Setting up Netdata</h2>
+
+    <p>
+      Before starting the attack, I checked that Nginx was running
+      and that <code>slowloris-run</code> was installed on my Azure VM.
+      I then installed Netdata and opened its dashboard in Firefox
+      using <code>http://127.0.0.1:19999</code>.
+    </p>
+
+    <p>
+      I used the TCP Connections graph to watch the connection count
+      and the Network Traffic graph to see changes in network activity.
+      Having both graphs helped me compare what happened during each
+      test.
+    </p>
+
+    <h2>Attack 1: Unprotected test</h2>
+
+    <p>
+      First, I ran Slowloris with 500 sockets before adding my custom
+      Nginx timeout settings.
+    </p>
+
+    <p>
+      <code>slowloris-run 127.0.0.1 -s 500</code>
+    </p>
+
+    <p>
+      During the unprotected test, the TCP Connections graph spiked
+      to around 1,000 connections. What stood out to me was that the
+      graph stayed elevated for longer periods before dropping and
+      then rising again.
+    </p>
+
+    <img
+      class="evidence"
+      src="dos-unprotected-tcp.png"
+      alt="Netdata TCP Connections graph during the unprotected test"
+      loading="lazy"
+    >
+
+    <p class="caption">
+      Figure 1: TCP Connections during the unprotected Slowloris test.
+    </p>
+
+    <img
+      class="evidence"
+      src="dos-unprotected-network.png"
+      alt="Netdata Network Traffic graph during the unprotected test"
+      loading="lazy"
+    >
+
+    <p class="caption">
+      Figure 2: Network Traffic during the unprotected Slowloris test.
+    </p>
+
+    <h2>Adding Nginx timeout settings</h2>
+
+    <p>
+      After the first test, I edited the Nginx configuration and added
+      four timeout settings to help manage slow or inactive client
+      connections.
+    </p>
+
+    <ul>
+      <li><code>client_header_timeout 10s;</code></li>
+      <li><code>client_body_timeout 10s;</code></li>
+      <li><code>keepalive_timeout 15s;</code></li>
+      <li><code>send_timeout 10s;</code></li>
+    </ul>
+
+    <p>
+      The setting I was most interested in was
+      <code>client_header_timeout 10s;</code> because Slowloris sends
+      request headers slowly. This setting limits how long Nginx waits
+      to receive the complete request header.
+    </p>
+
+    <p>
+      I checked the configuration with <code>sudo nginx -t</code>
+      and reloaded Nginx after the test passed. I also confirmed the
+      service was active and that the web server returned an HTTP
+      response.
+    </p>
+
+    <img
+      class="evidence"
+      src="dos-nginx-config.png"
+      alt="Nginx configuration with custom timeout settings"
+      loading="lazy"
+    >
+
+    <p class="caption">
+      Figure 3: My Nginx timeout configuration.
+    </p>
+
+    <h2>Attack 2: Protected test</h2>
+
+    <p>
+      After applying the settings, I ran the same Slowloris command
+      again with 500 sockets and watched the same Netdata graphs.
+    </p>
+
+    <p>
+      The protected graph still showed spikes close to 1,000
+      connections. However, I noticed that the connection count
+      dropped toward the baseline more frequently instead of staying
+      elevated for as long as it did in my unprotected test.
+    </p>
+
+    <img
+      class="evidence"
+      src="dos-protected-tcp.png"
+      alt="Netdata TCP Connections graph during the protected test"
+      loading="lazy"
+    >
+
+    <p class="caption">
+      Figure 4: TCP Connections during the protected Slowloris test.
+    </p>
+
+    <img
+      class="evidence"
+      src="dos-protected-network.png"
+      alt="Netdata Network Traffic graph during the protected test"
+      loading="lazy"
+    >
+
+    <p class="caption">
+      Figure 5: Network Traffic during the protected Slowloris test.
+    </p>
+
+    <h2>Comparing both tests</h2>
+
+    <p>
+      The biggest difference I noticed was how long the connections
+      stayed elevated. In the unprotected test, the graph spiked and
+      stayed flat near the top for longer before dropping and going
+      back up. In the protected test, the graph went up and down more
+      frequently.
+    </p>
+
+    <p>
+      Both tests still reached around 1,000 connections, so the peak
+      count alone doesn't prove that the attack was stopped. The
+      different patterns suggest that the timeout settings may have
+      affected how long connections stayed open, but the graphs alone
+      can't confirm exactly why the connections dropped.
+    </p>
+
+    <p>
+      This helped me understand why it's important to compare a
+      baseline with a protected test instead of just looking at one
+      graph. Checking Nginx logs for request header timeout events
+      would provide additional evidence of how the rules behaved.
+    </p>
+
+    <h2>What I learned</h2>
+
+    <p>
+      This project gave me hands-on experience testing a DoS attack
+      in my Azure VM, changing Nginx configuration settings, and
+      monitoring network activity with Netdata. I learned that
+      Slowloris works by keeping connections open slowly instead of
+      relying only on a large volume of traffic.
+    </p>
+
+    <p>
+      I also learned that adding security settings is only part of
+      the job. You need to test the changes, compare the results,
+      and check logs before deciding how effective the mitigation
+      actually is.
+    </p>
+
+    <h2>What's next?</h2>
+
+    <div class="next-steps">
+      <p>
+        Next, I want to inspect the Nginx error logs and look for
+        request header timeout events during testing. I also want
+        to learn more about TCP connection states and how monitoring
+        can help identify and investigate suspicious activity.
+      </p>
+    </div>
+
+    <p style="margin-top: 42px;">
+      <a href="/blog/">← More write-ups</a>
+      &nbsp; · &nbsp;
+      <a href="/">Back to portfolio</a>
+    </p>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      © 2026 Markens Dalien
+    </div>
+  </footer>
+
+</body>
+</html>
